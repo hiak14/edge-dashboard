@@ -1,0 +1,26 @@
+[
+  {
+    "category": "NBA \u2014 Points",
+    "n_markets": 29,
+    "avg_implied_prob": 0.518313,
+    "avg_actual_rate": 0.413793,
+    "mispricing_pp": -10.452026,
+    "outcome_agree_pct": null
+  },
+  {
+    "category": "NBA \u2014 Rebounds",
+    "n_markets": 111,
+    "avg_implied_prob": 0.492618,
+    "avg_actual_rate": 0.414414,
+    "mispricing_pp": -7.820337,
+    "outcome_agree_pct": null
+  },
+  {
+    "category": "NBA \u2014 Assists",
+    "n_markets": 91,
+    "avg_implied_prob": 0.50837,
+    "avg_actual_rate": 0.450549,
+    "mispricing_pp": -5.782044,
+    "outcome_agree_pct": null
+  }
+]

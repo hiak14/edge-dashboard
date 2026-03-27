@@ -1,0 +1,9 @@
+{
+  "total_markets": 262,
+  "fade_zone_mispricing_pp": -5.519752,
+  "fade_zone_buckets": 8,
+  "strongest_edge_subcategory": "NBA \u2014 Points",
+  "strongest_edge_pp": -10.45,
+  "strongest_edge_signal": "Strong",
+  "strongest_edge_direction": "YES overpriced (fade YES)"
+}

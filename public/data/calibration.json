@@ -1,0 +1,110 @@
+[
+  {
+    "bucket_pct": 5,
+    "bucket_label": "5%",
+    "n_markets": 31,
+    "expected": 0.025,
+    "actual": 0.580645,
+    "deviation": 0.555645,
+    "abs_deviation": 0.555645,
+    "expected_pct": 2.5,
+    "actual_pct": 58.06,
+    "deviation_pp": 55.56
+  },
+  {
+    "bucket_pct": 35,
+    "bucket_label": "35%",
+    "n_markets": 4,
+    "expected": 0.325,
+    "actual": 0.25,
+    "deviation": -0.075,
+    "abs_deviation": 0.075,
+    "expected_pct": 32.5,
+    "actual_pct": 25.0,
+    "deviation_pp": -7.5
+  },
+  {
+    "bucket_pct": 40,
+    "bucket_label": "40%",
+    "n_markets": 16,
+    "expected": 0.375,
+    "actual": 0.25,
+    "deviation": -0.125,
+    "abs_deviation": 0.125,
+    "expected_pct": 37.5,
+    "actual_pct": 25.0,
+    "deviation_pp": -12.5
+  },
+  {
+    "bucket_pct": 45,
+    "bucket_label": "45%",
+    "n_markets": 42,
+    "expected": 0.425,
+    "actual": 0.261905,
+    "deviation": -0.163095,
+    "abs_deviation": 0.163095,
+    "expected_pct": 42.5,
+    "actual_pct": 26.19,
+    "deviation_pp": -16.31
+  },
+  {
+    "bucket_pct": 50,
+    "bucket_label": "50%",
+    "n_markets": 51,
+    "expected": 0.475,
+    "actual": 0.411765,
+    "deviation": -0.063235,
+    "abs_deviation": 0.063235,
+    "expected_pct": 47.5,
+    "actual_pct": 41.18,
+    "deviation_pp": -6.32
+  },
+  {
+    "bucket_pct": 55,
+    "bucket_label": "55%",
+    "n_markets": 57,
+    "expected": 0.525,
+    "actual": 0.491228,
+    "deviation": -0.033772,
+    "abs_deviation": 0.033772,
+    "expected_pct": 52.5,
+    "actual_pct": 49.12,
+    "deviation_pp": -3.38
+  },
+  {
+    "bucket_pct": 60,
+    "bucket_label": "60%",
+    "n_markets": 38,
+    "expected": 0.575,
+    "actual": 0.447368,
+    "deviation": -0.127632,
+    "abs_deviation": 0.127632,
+    "expected_pct": 57.5,
+    "actual_pct": 44.74,
+    "deviation_pp": -12.76
+  },
+  {
+    "bucket_pct": 65,
+    "bucket_label": "65%",
+    "n_markets": 13,
+    "expected": 0.625,
+    "actual": 0.846154,
+    "deviation": 0.221154,
+    "abs_deviation": 0.221154,
+    "expected_pct": 62.5,
+    "actual_pct": 84.62,
+    "deviation_pp": 22.12
+  },
+  {
+    "bucket_pct": 70,
+    "bucket_label": "70%",
+    "n_markets": 10,
+    "expected": 0.675,
+    "actual": 0.6,
+    "deviation": -0.075,
+    "abs_deviation": 0.075,
+    "expected_pct": 67.5,
+    "actual_pct": 60.0,
+    "deviation_pp": -7.5
+  }
+]

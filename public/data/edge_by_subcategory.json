@@ -1,0 +1,35 @@
+[
+  {
+    "rank": 1,
+    "subcategory": "NBA \u2014 Points",
+    "category": "NBA \u2014 Points",
+    "n_markets": 29,
+    "avg_implied_prob": 0.518,
+    "avg_actual_rate": 0.414,
+    "mispricing_pp": -10.45,
+    "direction": "YES overpriced (fade YES)",
+    "signal_strength": "Strong"
+  },
+  {
+    "rank": 2,
+    "subcategory": "NBA \u2014 Rebounds",
+    "category": "NBA \u2014 Rebounds",
+    "n_markets": 111,
+    "avg_implied_prob": 0.493,
+    "avg_actual_rate": 0.414,
+    "mispricing_pp": -7.82,
+    "direction": "YES overpriced (fade YES)",
+    "signal_strength": "Moderate"
+  },
+  {
+    "rank": 3,
+    "subcategory": "NBA \u2014 Assists",
+    "category": "NBA \u2014 Assists",
+    "n_markets": 91,
+    "avg_implied_prob": 0.508,
+    "avg_actual_rate": 0.451,
+    "mispricing_pp": -5.78,
+    "direction": "YES overpriced (fade YES)",
+    "signal_strength": "Moderate"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "window": ">24h before",
+    "n_trades": 30,
+    "n_markets": 6,
+    "n_fade_markets": 4,
+    "avg_implied_all": 0.367791,
+    "avg_implied_fade": 0.551686,
+    "avg_actual_all": 0.333333,
+    "avg_actual_fade": 0.5,
+    "deviation_pp_all": -3.445736,
+    "deviation_pp_fade": -5.168605
+  },
+  {
+    "window": "6\u201324h before",
+    "n_trades": 4251,
+    "n_markets": 232,
+    "n_fade_markets": 174,
+    "avg_implied_all": 0.415887,
+    "avg_implied_fade": 0.508128,
+    "avg_actual_all": 0.456897,
+    "avg_actual_fade": 0.413793,
+    "deviation_pp_all": 4.100958,
+    "deviation_pp_fade": -9.433474
+  },
+  {
+    "window": "1\u20136h before",
+    "n_trades": 4257,
+    "n_markets": 238,
+    "n_fade_markets": 177,
+    "avg_implied_all": 0.440025,
+    "avg_implied_fade": 0.494919,
+    "avg_actual_all": 0.462185,
+    "avg_actual_fade": 0.40113,
+    "deviation_pp_all": 2.215956,
+    "deviation_pp_fade": -9.37891
+  },
+  {
+    "window": "<1h / in-game",
+    "n_trades": 1624,
+    "n_markets": 149,
+    "n_fade_markets": 81,
+    "avg_implied_all": 0.527035,
+    "avg_implied_fade": 0.490956,
+    "avg_actual_all": 0.496644,
+    "avg_actual_fade": 0.333333,
+    "deviation_pp_all": -3.039113,
+    "deviation_pp_fade": -15.762266
+  }
+]

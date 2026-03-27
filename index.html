@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDGE — Prediction Market Calibration</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080b0f;--bg2:#0e1318;--bg3:#141b22;--border:#1e2a34;--text:#c8d8e8;--muted:#4a6070;--accent:#00e5ff;--red:#ff3b5c;--green:#00e676;--yellow:#f0c040;--mono:'Space Mono',monospace;--sans:'Syne',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
+.logo{font-family:var(--sans);font-weight:800;font-size:22px;color:var(--accent)}
+.logo span{color:var(--muted);font-weight:400;font-size:12px;font-family:var(--mono);margin-left:12px}
+nav{display:flex;gap:4px}
+nav a{color:var(--muted);text-decoration:none;padding:6px 14px;border-radius:3px;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:.15s}
+nav a:hover,nav a.active{color:var(--accent);background:rgba(0,229,255,.07)}
+.updated{color:var(--muted);font-size:11px}
+main{max-width:1280px;margin:0 auto;padding:32px}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:18px 20px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:.4}
+.kpi .label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi .val{font-family:var(--sans);font-weight:800;font-size:32px;color:var(--accent);letter-spacing:-1px}
+.kpi .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.kpi .val.red{color:var(--red)}.kpi .val.green{color:var(--green)}
+.section{margin-bottom:40px}
+h2{font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+h2::after{content:'';flex:1;height:1px;background:var(--border)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:20px}
+.card-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border);font-weight:400}
+td{padding:8px 10px;border-bottom:1px solid rgba(30,42,52,.6)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,229,255,.03)}
+.pp{font-family:var(--mono);font-weight:700}
+.pp.neg{color:var(--red)}.pp.pos{color:var(--green)}
+.signal{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10px}
+.signal.very-strong{background:rgba(255,59,92,.15);color:var(--red)}
+.signal.strong{background:rgba(255,59,92,.08);color:#ff7a90}
+.signal.moderate{background:rgba(240,192,64,.08);color:var(--yellow)}
+.signal.weak{background:rgba(74,96,112,.15);color:var(--muted)}
+.bar-spark{height:4px;border-radius:2px;background:var(--border);overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:2px}
+.tw-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.tw-row:last-child{border-bottom:none}
+.tw-window{width:130px;color:var(--muted);font-size:11px;flex-shrink:0}
+.tw-bar{flex:1;height:24px;position:relative;background:rgba(30,42,52,.4);border-radius:2px}
+.tw-fill{position:absolute;top:2px;height:20px;border-radius:2px;opacity:.8}
+.tw-val{width:70px;text-align:right;font-size:12px;font-weight:700;flex-shrink:0}
+.tw-n{width:60px;text-align:right;color:var(--muted);font-size:11px;flex-shrink:0}
+.chart-wrap{position:relative}
+.loading{color:var(--muted);padding:32px 0;text-align:center;letter-spacing:2px;font-size:11px}
+footer{text-align:center;padding:32px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:48px}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}header{flex-wrap:wrap;gap:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">EDGE<span>// prediction market calibration</span></div>
+  <nav>
+    <a href="#overview" class="active">Overview</a>
+    <a href="#calibration">Calibration</a>
+    <a href="#edge">Edge</a>
+    <a href="#time">Time</a>
+  </nav>
+  <div class="updated" id="updated">—</div>
+</header>
+<main>
+  <div class="kpi-strip">
+    <div class="kpi"><div class="label">Total Markets</div><div class="val" id="kpi-markets">—</div></div>
+    <div class="kpi"><div class="label">Fade Zone Edge</div><div class="val red" id="kpi-edge">—</div><div class="sub">avg 30–70% deviation</div></div>
+    <div class="kpi"><div class="label">Strongest Signal</div><div class="val red" id="kpi-top-pp">—</div><div class="sub" id="kpi-top-name">—</div></div>
+    <div class="kpi"><div class="label">Signal Strength</div><div class="val" id="kpi-signal" style="font-size:18px">—</div></div>
+  </div>
+
+  <div id="overview" class="section">
+    <h2>Overview</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Edge by Category (pp, fade zone 30–70%)</div>
+        <div id="cat-table"><div class="loading">loading...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Edge by Time Window (fade-zone pp)</div>
+        <div id="tw-rows"><div class="loading">loading...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="calibration" class="section">
+    <h2>Calibration</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Deviation by Price Bucket (pp)</div>
+        <div class="chart-wrap" style="height:260px"><canvas id="cal-bar"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Expected vs Actual Win Rate</div>
+        <div class="chart-wrap" style="height:260px"><canvas id="cal-scatter"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="edge" class="section">
+    <h2>Edge by Subcategory</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>#</th><th>Subcategory</th><th>N</th><th>Implied</th><th>Actual</th><th>Mispricing (pp)</th><th>Signal</th><th>Direction</th></tr></thead>
+        <tbody id="sub-body"><tr><td colspan="8" class="loading">loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="time" class="section">
+    <h2>Time-Window Detail</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Window</th><th>Trades</th><th>Markets</th><th>Fade Mkts</th><th>Implied (fade)</th><th>Actual (fade)</th><th>Dev pp (all)</th><th>Dev pp (fade)</th></tr></thead>
+        <tbody id="tw-body"><tr><td colspan="8" class="loading">loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<footer>EDGE &mdash; Independent replication of Subversive Capital 52K-market calibration study &nbsp;&middot;&nbsp; Kalshi &times; Polymarket &nbsp;&middot;&nbsp; <span id="footer-date">—</span></footer>
+
+<script>
+const BASE='./data';
+const FONT={family:"'Space Mono',monospace",size:10};
+const GRID={color:'rgba(30,42,52,0.8)'};
+const TICK={color:'#4a6070',font:FONT};
+
+function pp(v,d=1){if(v==null)return'—';return(v>0?'+':'')+v.toFixed(d)+'pp'}
+function ppCell(v){if(v==null)return'<td>—</td>';const c=v<0?'neg':'pos';return`<td><span class="pp ${c}">${pp(v)}</span></td>`}
+function sigClass(s){return({'Very Strong':'very-strong','Strong':'strong','Moderate':'moderate','Weak':'weak'})[s]||'weak'}
+async function load(n){const r=await fetch(`${BASE}/${n}.json?t=${Date.now()}`);return r.json()}
+
+async function init(){
+  try{
+    const[summary,cal,cat,sub,tw]=await Promise.all([load('summary'),load('calibration'),load('edge_by_category'),load('edge_by_subcategory'),load('edge_over_time')]);
+
+    document.getElementById('kpi-markets').textContent=(summary.total_markets||0).toLocaleString();
+    const edge=summary.fade_zone_mispricing_pp;
+    document.getElementById('kpi-edge').textContent=edge!=null?pp(edge):'—';
+    document.getElementById('kpi-top-pp').textContent=summary.strongest_edge_pp!=null?pp(summary.strongest_edge_pp):'—';
+    document.getElementById('kpi-top-name').textContent=summary.strongest_edge_subcategory||'—';
+    document.getElementById('kpi-signal').textContent=summary.strongest_edge_signal||'—';
+    document.getElementById('updated').textContent='updated '+new Date().toLocaleDateString();
+    document.getElementById('footer-date').textContent=new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'});
+
+    // Category bars
+    const maxAbs=Math.max(...cat.map(r=>Math.abs(r.mispricing_pp||0)));
+    document.getElementById('cat-table').innerHTML=cat.map(r=>{
+      const v=r.mispricing_pp||0,w=Math.abs(v)/maxAbs*100,col=v<0?'#ff3b5c':'#00e676';
+      return`<div style="padding:8px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>${r.category}</span><span class="pp ${v<0?'neg':'pos'}">${pp(v)} <span style="color:var(--muted);font-weight:400">n=${r.n_markets}</span></span></div><div class="bar-spark"><div class="bar-fill" style="width:${w}%;background:${col}"></div></div></div>`;
+    }).join('');
+
+    // Time window overview
+    const twMax=Math.max(...tw.map(r=>Math.abs(r.deviation_pp_fade||0)));
+    document.getElementById('tw-rows').innerHTML=tw.map(r=>{
+      const v=r.deviation_pp_fade;if(v==null)return'';
+      const w=Math.abs(v)/twMax*45,col=v<0?'#ff3b5c':'#00e676',off=v<0?0:-w;
+      return`<div class="tw-row"><div class="tw-window">${r.window}</div><div class="tw-bar"><div class="tw-fill" style="width:${w}%;left:calc(50% + ${off}%);background:${col}"></div></div><div class="tw-val ${v<0?'pp neg':'pp pos'}">${pp(v)}</div><div class="tw-n">n=${r.n_fade_markets}</div></div>`;
+    }).join('')||'<div class="loading">no data</div>';
+
+    // Cal bar
+    const fcal=cal.filter(r=>r.bucket_pct>=10&&r.bucket_pct<=90);
+    new Chart(document.getElementById('cal-bar'),{
+      type:'bar',
+      data:{labels:fcal.map(r=>r.bucket_label),datasets:[{data:fcal.map(r=>r.deviation_pp),backgroundColor:fcal.map(r=>r.deviation_pp<0?'rgba(255,59,92,0.7)':'rgba(0,230,118,0.7)'),borderWidth:0,borderRadius:2},{type:'line',data:fcal.map(()=>0),borderColor:'rgba(240,192,64,0.4)',borderDash:[4,4],borderWidth:1,pointRadius:0,fill:false}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:TICK,grid:GRID},y:{ticks:TICK,grid:GRID,suggestedMin:-30,suggestedMax:30,title:{display:true,text:'Deviation pp  (− = YES overpriced)',color:'#4a6070',font:FONT}}}}
+    });
+
+    // Scatter
+    const pts=cal.filter(r=>r.bucket_pct>=10&&r.bucket_pct<=90&&r.expected_pct!=null&&r.actual_pct!=null).map(r=>({x:r.expected_pct/100,y:r.actual_pct/100,r:Math.max(4,Math.min(14,r.n_markets*0.05))}));
+    new Chart(document.getElementById('cal-scatter'),{
+      type:'bubble',
+      data:{datasets:[{label:'Perfect',type:'line',data:[{x:.1,y:.1},{x:.9,y:.9}],borderColor:'rgba(255,255,255,0.15)',borderDash:[4,4],borderWidth:1,pointRadius:0,fill:false},{label:'Markets',data:pts,backgroundColor:'rgba(0,229,255,0.4)',borderColor:'rgba(0,229,255,0.8)',borderWidth:1}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:.1,max:.9,ticks:{...TICK,callback:v=>(v*100).toFixed(0)+'%'},grid:GRID,title:{display:true,text:'Expected win rate',color:'#4a6070',font:FONT}},y:{min:.1,max:.9,ticks:{...TICK,callback:v=>(v*100).toFixed(0)+'%'},grid:GRID,title:{display:true,text:'Actual win rate',color:'#4a6070',font:FONT}}}}
+    });
+
+    // Subcategory table
+    document.getElementById('sub-body').innerHTML=sub.map(r=>{
+      const v=r.mispricing_pp,sd=r.direction||'',dir=sd.includes('overpriced')?'↓ fade YES':'↑ buy YES';
+      return`<tr><td style="color:var(--muted)">${r.rank}</td><td>${r.subcategory}</td><td>${r.n_markets}</td><td style="color:var(--muted)">${(r.avg_implied_prob*100).toFixed(1)}%</td><td style="color:var(--muted)">${(r.avg_actual_rate*100).toFixed(1)}%</td>${ppCell(v)}<td><span class="signal ${sigClass(r.signal_strength)}">${r.signal_strength}</span></td><td style="color:var(--muted);font-size:11px">${dir}</td></tr>`;
+    }).join('');
+
+    // TW detail table
+    document.getElementById('tw-body').innerHTML=tw.map(r=>`<tr><td>${r.window}</td><td>${(r.n_trades||0).toLocaleString()}</td><td>${r.n_markets||0}</td><td>${r.n_fade_markets||0}</td><td style="color:var(--muted)">${r.avg_implied_fade!=null?(r.avg_implied_fade*100).toFixed(1)+'%':'—'}</td><td style="color:var(--muted)">${r.avg_actual_fade!=null?(r.avg_actual_fade*100).toFixed(1)+'%':'—'}</td>${ppCell(r.deviation_pp_all)}${ppCell(r.deviation_pp_fade)}</tr>`).join('');
+
+  }catch(e){
+    console.error(e);
+    document.querySelector('main').insertAdjacentHTML('afterbegin',`<div style="padding:20px;color:var(--red);font-family:var(--mono)">Error: ${e.message}</div>`);
+  }
+}
+
+init();
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+    a.classList.add('active');
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
